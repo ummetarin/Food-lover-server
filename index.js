@@ -29,7 +29,7 @@ async function run() {
     await client.connect();
 
     const topservies=client.db('RestaurentData').collection('TopServices')
-    const allresdata=client.db('RestaurentData').collection('AllFoodData')
+    const allresdata=client.db('RestaurentData').collection('FoodAllData')
 
 
     // topservies
@@ -40,9 +40,30 @@ async function run() {
     })
     // for all data
     app.get("/allresfood",async(req,res)=>{
-        const result=await allresdata.find().toArray();
+       console.log("x",req.query);
+        const page=parseInt(req.query.pages)
+        const size=parseInt(req.query.size)
+        console.log("oa",page,size);
+        const result=await allresdata.find()
+        .skip(page*size)
+        .limit(size)
+        .toArray();
         res.send(result)
     })
+
+    app.get("/count",async(req,res)=>{
+      const count=await allresdata.estimatedDocumentCount()
+      res.send({count});
+    })
+
+
+    // details
+    // app.get('/dataforshow/:id',async(req,res)=>{
+    //   const id=req.params.id;
+    //   const query={FoodID:id}
+    //   const result=await allresdata.findOne(query)
+    //   res.send(result)
+    // })
 
 
     // Send a ping to confirm a successful connection
