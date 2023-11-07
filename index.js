@@ -28,8 +28,11 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-    const topservies=client.db('RestaurentData').collection('TopServices')
-    const allresdata=client.db('RestaurentData').collection('FoodAllData')
+    const topservies=client.db('RestaurentData').collection('TopServices');
+    const allresdata=client.db('RestaurentData').collection('FoodAllData');
+    const Orderdata=client.db('RestaurentData').collection('ordered');
+    const Addelement=client.db('RestaurentData').collection('Addeddata')
+    
 
 
     // topservies
@@ -58,6 +61,7 @@ async function run() {
 
 
     // details
+  
     
     app.get('/allresfood/:id', async (req,res) => {
       const id = parseInt(req.params.id);
@@ -65,8 +69,45 @@ async function run() {
       const result = await allresdata.findOne(query);
       res.send(result);
   })
-    
 
+  // orderdata
+
+  app.get('/orderdata',async(req,res)=>{
+    console.log(req.query.email);
+    let query={};
+    if(req.query?.email){
+      query= { Email: req.query.email}
+    }
+    const result=await Orderdata.find(query).toArray();
+    res.send(result);
+  })
+
+  app.post("/orderdata",async(req,res)=>{
+    const bookdata=req.body;
+    console.log(bookdata);
+    const result=await Orderdata.insertOne(bookdata)
+    res.send(result)
+  })
+
+    
+// add element
+
+// app.get('/adddata',async(req,res)=>{
+//   console.log(req.query.email);
+//   let query={};
+//   if(req.query?.email){
+//     query= { email: req.query.email}
+//   }
+//   const result=await Addelement.find().toArray();
+//   res.send(result);
+// })
+
+// app.post("/adddata",async(req,res)=>{
+//   const adddata=req.body;
+//   console.log(adddata);
+//   const result=await Addelement.insertOne(adddata)
+//   res.send(result)
+// })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
