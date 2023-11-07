@@ -92,15 +92,15 @@ async function run() {
     
 // add element
 
-// app.get('/adddata',async(req,res)=>{
-//   console.log(req.query.email);
-//   let query={};
-//   if(req.query?.email){
-//     query= { email: req.query.email}
-//   }
-//   const result=await Addelement.find().toArray();
-//   res.send(result);
-// })
+app.get('/adddata',async(req,res)=>{
+  console.log(req.query.email);
+  let query={};
+  if(req.query?.email){
+    query= { AddBy: req.query.email}
+  }
+  const result=await Addelement.find(query).toArray();
+  res.send(result);
+})
 
 app.post("/adddata",async(req,res)=>{
   const adddata=req.body;
