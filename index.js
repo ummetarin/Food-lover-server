@@ -58,12 +58,14 @@ async function run() {
 
 
     // details
-    // app.get('/dataforshow/:id',async(req,res)=>{
-    //   const id=req.params.id;
-    //   const query={FoodID:id}
-    //   const result=await allresdata.findOne(query)
-    //   res.send(result)
-    // })
+    
+    app.get('/allresfood/:id', async (req,res) => {
+      const id = parseInt(req.params.id);
+      const query = { FoodID: id };
+      const result = await allresdata.findOne(query);
+      res.send(result);
+  })
+    
 
 
     // Send a ping to confirm a successful connection
