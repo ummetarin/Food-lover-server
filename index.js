@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const app=express();
 const port=process.env.PORT||5000;
@@ -89,6 +89,13 @@ async function run() {
     res.send(result)
   })
 
+  app.delete('/orderdata/:id',async(req,res)=>{
+    const id=req.params.id;
+    const query={_id:new ObjectId(id)}
+    const result=await Orderdata.deleteOne(query);
+    res.send(result);
+  })
+
     
 // add element
 
@@ -108,6 +115,41 @@ app.post("/adddata",async(req,res)=>{
   const result=await Addelement.insertOne(adddata)
   res.send(result)
 })
+
+// update data
+
+app.get('/adddata/:id',async(req,res)=>{
+  const id = req.params.id;
+  console.log(id);
+  const query = { _id: new ObjectId(id) };
+  const result=await Addelement.findOne(query)
+  res.send(result);
+
+})
+app.put('/updateddata/:id',async(req,res)=>{
+  const id=req.params.id;
+  console.log(id);
+  const filter={_id: new ObjectId(id)}
+  const options={ upsert :true}
+  const updatedata=req.body;
+   const dataupdate= {
+
+    $set:{
+  
+      Foodname:updatedata.Foodname,
+      Quantity:updatedata.Quantity,
+      Category:updatedata.Category,
+      Origin:updatedata.Origin,
+      Price:updatedata.Price,
+      Describtion:updatedata.Describtion,
+      Image:updatedata.Image
+
+    }
+  }
+  const result=await Addelement.updateOne(filter, dataupdate,options)
+  res.send(result)
+})
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
