@@ -102,12 +102,12 @@ async function run() {
 //   res.send(result);
 // })
 
-// app.post("/adddata",async(req,res)=>{
-//   const adddata=req.body;
-//   console.log(adddata);
-//   const result=await Addelement.insertOne(adddata)
-//   res.send(result)
-// })
+app.post("/adddata",async(req,res)=>{
+  const adddata=req.body;
+  console.log(adddata);
+  const result=await Addelement.insertOne(adddata)
+  res.send(result)
+})
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
