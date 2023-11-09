@@ -37,10 +37,7 @@ const client = new MongoClient(uri, {
 
 
 // middlwares
-const logger=(req,res,next)=>{
-  console.log("logInfo",req.method,req.url);
-  next();
-}
+
 
 const verifyToken=(req,res,next)=>{
   const token=req.cookies?.token;
@@ -72,11 +69,11 @@ async function run() {
     
 // jwt
 
-app.post('/jwt',logger,verifyToken, async(req,res)=>{
+app.post('/jwt', async(req,res)=>{
   const user=req.body;
   console.log("user token",req.user);
   const token=jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{expiresIn:'1h'})
- res.cookie('token',token,{
+  res.cookie('token',token,{
   httpOnly:true,
   secure:false,
  })
@@ -130,24 +127,26 @@ app.post("/logout",async(req,res)=>{
       res.send(result);
   })
 
-  // orderdata
 
-  app.get('/orderdata',logger,verifyToken,async(req,res)=>{
-    console.log(req.query.email);
-    console.log('cokkis',req.cookies);
+ 
+
+
+  app.get('/orderdata',verifyToken, async(req,res)=>{
+    console.log("x",req.query.email);
+    console.log('cokkis',req.user.email);
     console.log("token owner info",req.user);
-    if(req.user.email !==req.query.email){
+    if(req.user.email != req.query.email){
       return res.status(403).send({message:"forbidden accsess"})
     }
     let query={};
     if(req.query?.email){
-      query= { Email: req.query.email}
+      query= { Buyeremail: req.query.email}
     }
     const result=await Orderdata.find(query).toArray();
     res.send(result);
   })
 
-  app.post("/orderdata",logger, verifyToken, async(req,res)=>{
+  app.post("/orderdata", async(req,res)=>{
     const bookdata=req.body;
     console.log(bookdata);
     const result=await Orderdata.insertOne(bookdata)
@@ -165,7 +164,7 @@ app.post("/logout",async(req,res)=>{
 // add element
 
 app.get('/adddata',async(req,res)=>{
-  console.log(req.query.email);
+  // console.log(req.query.email);
   let query={};
   if(req.query?.email){
     query= { AddBy: req.query.email}
